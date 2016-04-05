@@ -1,0 +1,17 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.WatermarkScalaApplication.index
+
+GET     /todo                           controllers.WatermarkScalaApplication.todo
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# create a ticket
+POST    /watermark                  controllers.WatermarkScalaApplication.watermarkDocument
+
+
+
