@@ -13,6 +13,8 @@ import play.api.libs.functional.syntax._
 // no inheritance due to json mapping constraints in scala
 case class Document(id: Int, author: String, title: String, topic: String = null, watermark: String = null)
 
+// TODO missing validation for the topics
+// TODO lacking proper modelling for the subtypes Book Journal
 object Document {
   // (id: Int, author: String, title: String, watermark: String = null)
   implicit val reader: Reads[Document] = (
@@ -20,7 +22,7 @@ object Document {
      (JsPath \ "author").read[String] and
      (JsPath \ "title").read[String] and
      (JsPath \ "topic").read[String] and
-      (JsPath \ "watermark").read[String]
+     (JsPath \ "watermark").read[String]
     )(Document.apply _)
 
   implicit val writer: Writes[Document] = (
@@ -30,6 +32,14 @@ object Document {
     (JsPath \ "topic").write[String]  and
     (JsPath \ "watermark").write[String]
     ) (unlift(Document.unapply))
+
+  def getTestDoc1: Document = {
+    return new Document(4711, "Margaret Mitchell", "Gone With the Sand", "Fiction")
+  }
+
+  def getTestDoc2: Document = {
+    return new Document(9999, "Aldous Huxley", "Brave Old World", "Fiction")
+  }
 
   private val concurrentHashMap = new ConcurrentHashMap[Long, Document]()
 
