@@ -1,8 +1,8 @@
-import models.Document
+import models._
 import org.junit.runner._
 import org.specs2.mutable._
 import org.specs2.runner._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsSuccess, Json}
 import play.api.test._
 
 /**
@@ -12,14 +12,16 @@ import play.api.test._
 @RunWith(classOf[JUnitRunner])
 class NoviceSpec extends Specification {
 
-  "test (test) - docs ctor" in new WithApplication {
-    val doc = new Document(4711, "Robert Miller", "Gone With the Sand", "Fiction")
+  "can use ctor" in new WithApplication {
+    val doc = Document(id = 4711, author = "Robert Miller", title = "Gone With the Sand", topic = Option("Fiction"))
     doc.id mustEqual 4711
+    doc.author mustEqual "Robert Miller"
+    doc.watermark mustEqual None
   }
 
-  "testJsonConversion" in new WithApplication() {
-    val doc1 = Document.getTestDoc1
-    val doc2 = Document.getTestDoc2
+  "convert data to json" in new WithApplication() {
+    val doc1 = Document.getTestBook1
+    val doc2 = Document.getTestBook2
     val json1 = Json.toJson(doc1)
     val json2 = Json.toJson(doc2)
     json1 mustNotEqual json2
@@ -30,5 +32,11 @@ class NoviceSpec extends Specification {
 
     doc1json mustEqual doc1
     doc2json mustEqual doc2
+
+    // tickets
+    val ticket = Ticket.getTestTicketFor(Document.getTestBook1)
+    val tkt2json = Json.toJson(ticket)
+    val tktFromJson = Json.fromJson[Ticket](tkt2json).get
+    tktFromJson mustEqual ticket
   }
 }
